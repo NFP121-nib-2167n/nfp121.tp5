@@ -53,11 +53,10 @@ public class JPanelListe2 extends JPanel implements ActionListener, ItemListener
         panelBoutons.add(boutonAnnuler);
         cmd.add(panelBoutons);
 
-
-        if(liste!=null && occurrences!=null){
-            afficheur.setText(liste.getClass().getName() + " et "+ occurrences.getClass().getName());
+        if (liste != null && occurrences != null) {
+            afficheur.setText(liste.getClass().getName() + " et " + occurrences.getClass().getName());
             texte.setText(liste.toString());
-        }else{
+        } else {
             texte.setText("la classe Chapitre2CoreJava semble incomplète");
         }
 
@@ -67,7 +66,11 @@ public class JPanelListe2 extends JPanel implements ActionListener, ItemListener
         add(texte, "Center");
 
         boutonRechercher.addActionListener(this);
-        // à compléter;
+        boutonAnnuler.addActionListener(this);
+        boutonRetirer.addActionListener(this);
+        ordreCroissant.addItemListener(this);
+        ordreDecroissant.addItemListener(this);
+        boutonOccurrences.addActionListener(this);
 
     }
 
@@ -78,19 +81,20 @@ public class JPanelListe2 extends JPanel implements ActionListener, ItemListener
                 res = liste.contains(saisie.getText());
                 Integer occur = occurrences.get(saisie.getText());
                 afficheur.setText("résultat de la recherche de : "
-                    + saisie.getText() + " -->  " + res);
+                        + saisie.getText() + " -->  " + res);
             } else if (ae.getSource() == boutonRetirer) {
                 res = retirerDeLaListeTousLesElementsCommencantPar(saisie
-                    .getText());
+                        .getText());
                 afficheur
-                .setText("résultat du retrait de tous les éléments commençant par -->  "
-                    + saisie.getText() + " : " + res);
+                        .setText("résultat du retrait de tous les éléments commençant par -->  "
+                                + saisie.getText() + " : " + res);
             } else if (ae.getSource() == boutonOccurrences) {
                 Integer occur = occurrences.get(saisie.getText());
-                if (occur != null)
+                if (occur != null) {
                     afficheur.setText(" -->  " + occur + " occurrence(s)");
-                else
+                } else {
                     afficheur.setText(" -->  ??? ");
+                }
             }
             texte.setText(liste.toString());
 
@@ -100,19 +104,31 @@ public class JPanelListe2 extends JPanel implements ActionListener, ItemListener
     }
 
     public void itemStateChanged(ItemEvent ie) {
-        if (ie.getSource() == ordreCroissant)
-        ;// à compléter
-        else if (ie.getSource() == ordreDecroissant)
-        ;// à compléter
+        if (ie.getSource() == ordreCroissant) {
+            Collections.sort(liste);
+        } else if (ie.getSource() == ordreDecroissant) {
+            Collections.sort(liste, new Comparator<String>() {
+                @Override
+                public int compare(String string1, String string2) {
+                    return string2.compareTo(string1);
+                }
+            });
+        }
 
         texte.setText(liste.toString());
     }
 
     private boolean retirerDeLaListeTousLesElementsCommencantPar(String prefixe) {
         boolean resultat = false;
-        // à compléter
-        // à compléter
-        // à compléter
+        Iterator<String> iterator = liste.iterator();
+        while (iterator.hasNext()) {
+            String next = iterator.next();
+            if (next.startsWith(prefixe)) {
+                resultat = true;
+                iterator.remove();
+                occurrences.replace(next, 0);
+            }
+        }
         return resultat;
     }
 
